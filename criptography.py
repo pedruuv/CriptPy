@@ -21,7 +21,6 @@ def main():
             output_file = input("Digite o nome do arquivo que deseja salvar(Ex: arquivo_encriptado.txt): ")
             encriptar(input_file, output_file)
         elif opcao == 2:
-            #ainda não tá funcionando
             key = get_key()
             input_file = input("Digite o nome do arquivo que deseja decriptar(Ex: arquivo_encriptado.txt) ")
             output_file = input("Digite o nome do arquivo que deseja salvar(Ex: arquivo_decriptado.txt): ")
