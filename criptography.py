@@ -10,19 +10,27 @@ def main():
         
         print("1- Encriptar")
         print("2- Decriptar")
-        print("3- Sair\n")
+        print("3- Sair")
+        print("4- Gerar chave\n")
         
         opcao = int(input())
         
         if opcao == 1:
-            encriptar()
+            key = get_key()
+            input_file = input("Digite o nome do arquivo que deseja encriptar(Ex: arquivo.txt) ")
+            output_file = input("Digite o nome do arquivo que deseja salvar(Ex: arquivo_encriptado.txt): ")
+            encriptar(input_file, output_file)
         elif opcao == 2:
             #ainda não tá funcionando
-            chave = obter_chave()
-            decriptar(chave)
+            key = get_key()
+            input_file = input("Digite o nome do arquivo que deseja decriptar(Ex: arquivo_encriptado.txt) ")
+            output_file = input("Digite o nome do arquivo que deseja salvar(Ex: arquivo_decriptado.txt): ")
+            decriptar(key, input_file, output_file)
         elif opcao == 3:
             print("Até logo!")
             exit()
+        elif opcao == 4:
+            gen_key()
         else:
             print("Opção inválida")
 
@@ -34,30 +42,41 @@ def obter_chave():
     key = input("Digite a chave: ")
     return key
 
-def encriptar():
+def gen_key():
     key = Fernet.generate_key()
-    f = Fernet(key)
-    print(f)
-    print(f"Essa é a sua chave: {key}. Não perca ela!!")
     
-    mensagem = input("Digite a messagem que deseja criptografar: ")
+    with open('mykey.key', 'wb') as mykey:
+        mykey.write(key)
+    limpar_terminal()
+
+def get_key():
+    with open('mykey.key', 'rb') as mykey:
+        key = mykey.read()
+    return key
+
+def encriptar(input_file, output_file):
+    with open('mykey.key', 'rb') as mykey:
+        key = mykey.read()
+    fernet = Fernet(key)
     
-    mensagem_bytes = mensagem.encode('utf-8')
+    with open(input_file, 'rb') as f:
+        data = f.read()
+        encrypted_data = fernet.encrypt(data)
     
-    token = f.encrypt(mensagem_bytes)
-    
-    print(f"Texto criptografado {token}")
+    with open(output_file, 'wb') as f:
+        f.write(encrypted_data)
     
     limpar_terminal()
 
 
-def decriptar(key):
-    f = Fernet(key)
-    token = input("Cole a mensagem criptografada:\n")
-    
-    mensagem_decriptada = f.decrypt(token)
-    
-    print(f"Mensagem decriptada: {mensagem_decriptada}")
+def decriptar(key, input_file, output_file):
+    fernet = Fernet(key)
+    with open(input_file, 'rb') as f:
+        data = f.read()
+        decrypted_data = fernet.decrypt(data)
+        
+    with open(output_file, 'wb') as f:
+        f.write(decrypted_data)
     
     limpar_terminal()
 
